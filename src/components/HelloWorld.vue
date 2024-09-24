@@ -4,12 +4,14 @@
     <input type="text" class="mb-2" v-model="content">
     <br>
     <button type="button" class="btn btn-primary" @click="add()">Thêm</button>
+    <button type="button" class="btn btn-danger ml-2" @click="deleteWork()">Xóa</button>
     <table class="table mt-2">
       <thead>
       <tr>
         <th scope="col">#</th>
         <th scope="col">content</th>
-        <th>Trạng thái</th>
+        <th >Trạng thái</th>
+        <th scope="col">Chọn</th>
         <th scope="col">Handle</th>
       </tr>
       </thead>
@@ -17,12 +19,14 @@
       <tr v-for="(work,index) in lists" :key="index">
         <th scope="row">{{index+1}}</th>
         <td :class="{'strikethrough':work.status}">{{work.content}}</td>
-        <td>
+        <td >
           <input type="checkbox" v-model="work.status">
+        </td>
+        <td >
+          <input type="checkbox" v-model="work.selected">
         </td>
         <td>
           <button type="button" class="btn btn-success" :disabled="work.status" @click="openModal(work,index)">Edit</button>
-          <button type="button" class="btn btn-danger ml-2" @click="deleteWork()">Xóa</button>
         </td>
       </tr>
       </tbody>
@@ -62,7 +66,7 @@ export default {
        alert('vui lòng nhập to do list')
         return
       }
-      this.lists = [{content: this.content , status: false},...this.lists]
+      this.lists = [{content: this.content , status: false,selected: false},...this.lists]
       this.content = ''
     },
     edit(){
@@ -73,8 +77,8 @@ export default {
       this.lists[this.indexEdit].content = this.contentEdit
       this.isOpen = false;
     },
-    deleteWork(index){
-      this.lists.splice(index,1)
+    deleteWork(){
+      this.lists = this.lists.filter((e)=>!e.selected)
     },
     openModal(work, index){
       this.isOpen = true;
